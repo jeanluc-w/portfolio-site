@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- The Path: A structured, architectural 'J' -->
+  <path d="M18 6V22C18 24.2091 16.2091 26 14 26H10" 
+        stroke="#10b981" 
+        stroke-width="4" 
+        stroke-linecap="round" 
+        stroke-linejoin="round"/>
+  
+  <!-- The Node: Representing a hardware connection point -->
+  <circle cx="18" cy="6" r="4" fill="#10b981"/>
+</svg>
