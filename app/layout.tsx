@@ -8,11 +8,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono' });
 
 export const metadata: Metadata = {
-  title: 'Jean-Luc Williams | Solutions Architect',
-  description: 'Solutions Architect designing scalable cloud platforms, backend systems, and data-driven solutions with a focus on cognitive design.',
-  metadataBase: new URL('https://jeanluc-williams.com'), 
+  title: 'Jean-Luc Williams | Software Engineer',
+  description: 'Software engineer building secure cloud platforms, identity systems, and backend infrastructure, with a background in cognitive design.',
+  metadataBase: new URL('https://jeanluc-williams.com'),
   openGraph: {
-    title: 'Jean-Luc Williams | Solutions Architect',
+    title: 'Jean-Luc Williams | Software Engineer',
     description: 'Systems Engineering & Cognitive Design. Bridging robust backend architecture with human-centered design.',
     url: 'https://jeanluc-williams.com',
     siteName: 'Jean-Luc Williams Portfolio',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Jean-Luc Williams | Solutions Architect',
+    title: 'Jean-Luc Williams | Software Engineer',
     description: 'Systems Engineering & Cognitive Design.',
   },
   icons: {
@@ -41,8 +41,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className={`${inter.variable} ${mono.variable}`}>
+      <body>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-lg focus:bg-emerald-500 focus:text-slate-950 focus:font-semibold"
+        >
+          Skip to content
+        </a>
+        {children}
+      </body>
       <Analytics />
       <SpeedInsights />
     </html>

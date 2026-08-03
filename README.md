@@ -1,5 +1,5 @@
 # Portfolio Website
-My personal portfolio website, built primarily using Next.js and TailwindCSS.
+My personal portfolio website, built using Next.js, TailwindCSS, and AI assistance.
 
 Website can be found at [jeanluc.me](https://jeanluc.me) or [jeanluc-williams.com](https://jeanluc-williams.com)
 

@@ -1,6 +1,5 @@
 import {
   Terminal,
-  Cpu,
   Gamepad2,
   Shield,
   ArrowUpRight,
@@ -11,19 +10,181 @@ import {
   Code2,
   Wrench,
   Compass,
-  ShieldCheck
+  ShieldCheck,
+  Footprints,
+  Mail,
 } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 
+// --- Content (kept separate from markup so copy edits don't touch JSX) ---
+
+const CAPABILITIES = [
+  {
+    icon: Code2,
+    accent: 'indigo',
+    title: 'Cloud & DevOps',
+    body: 'AWS, Google Cloud (GCP), Microsoft Azure, Terraform, Docker, Azure DevOps, GitHub Actions, Heroku Apps.',
+  },
+  {
+    icon: Shield,
+    accent: 'emerald',
+    title: 'Backend & Security',
+    body: 'Dart, Python, Java, Node.js, TypeScript, Go, IAM, OAuth 2.0, Okta, Auth0, Apigee X.',
+  },
+  {
+    icon: Brain,
+    accent: 'amber',
+    title: 'Frontend & Data',
+    body: 'React, Next.js, Flutter, Tailwind CSS, SQL, PostgreSQL, MongoDB, Firestore.',
+  },
+] as const;
+
+const PROJECTS = [
+  {
+    icon: Code2,
+    accent: 'emerald',
+    status: 'Active Development',
+    title: 'Edibubble — Social Network',
+    body: 'Cross-platform social networking app built with Flutter and Dart, focused on high-performance mobile and web UI rendering, backed by a Supabase (PostgreSQL) backend handling real-time sync, auth, and relational data.',
+    stack: 'Flutter • Supabase • Dart',
+    span: false,
+    link: undefined as string | undefined, // private repo — add the URL here once it's public
+  },
+  {
+    icon: Gamepad2,
+    accent: 'indigo',
+    status: 'Concept & Mechanics',
+    title: 'Stick-Champ Engine',
+    body: '2-player arcade fighting game engine in C# and Unity with deterministic rollback netcode for zero-latency remote multiplayer, plus frame-accurate state syncing and input-buffer prediction.',
+    stack: 'Unity (C#) • Network State Sync',
+    span: false,
+    link: undefined as string | undefined, // private repo — add the URL here once it's public
+  },
+  {
+    icon: Footprints,
+    accent: 'rose',
+    status: 'Early Prototyping',
+    title: 'Untitled Quadruped Physics Game',
+    body: 'A QWOP-inspired physical-comedy game for dogs: players drive each leg independently through ragdoll/procedural physics in Unity, trading precise control for the same glorious, chaotic failure states that made the original a classic — reimagined for four legs instead of two.',
+    stack: 'Unity (C#) • Ragdoll Physics',
+    span: false,
+    link: undefined as string | undefined, // private repo — add the URL here once it's public
+  },
+  {
+    icon: Wrench,
+    accent: 'amber',
+    status: 'Hardware & Making',
+    title: 'Hardware & Maker Lab',
+    body: 'Physical IoT and hardware security builds, including assembling and soldering a Slim Pwnagotchi for network auditing, plus custom CAD models and 3D-printed structural components for multi-part assemblies.',
+    stack: 'Soldering • Assembly • 3D Printing',
+    span: false,
+    link: undefined as string | undefined,
+  },
+] as const;
+
+const EXPERIENCE = [
+  {
+    role: 'Founding Software Engineer',
+    org: 'Fletcher Jones Management Group',
+    current: false,
+    bullets: [
+      "Built and led the company's first internal software engineering team, transitioning ownership of a six-year Salesforce platform from external contractors.",
+      'Architected CI/CD pipelines via GitHub Actions, automating deployments and giving the executive suite real-time project visibility.',
+      'Partnered with the CTO to map the technology landscape and define the roadmap for enterprise-wide stack consolidation.',
+    ],
+  },
+  {
+    role: 'Software Engineer I, Customer Identity Team',
+    org: 'MGM Resorts International',
+    current: false,
+    bullets: [
+      'Redesigned guest identity experiences, driving a 27% increase in login success and a 25.7% increase in account activation while eliminating major recurring guest-reported errors.',
+      'Modernized identity systems to strict OAuth 2.0 compliance, coordinating cross-functional teams through integration changes across a polyglot stack (Java, Node.js, Python, Dart).',
+      'Built high-performance Dart-based APIs on Google Firestore for personalized user preferences and targeted marketing offers.',
+      'Assisted critical restoration efforts during an enterprise-wide security incident, rebuilding core networking and service environments.',
+    ],
+  },
+  {
+    role: 'Webmaster',
+    org: 'Largo Consulting Services, LLC',
+    current: false,
+    bullets: [
+      'Owned the full lifecycle — design, security, and optimization — of 11 client websites on WordPress and BigCommerce.',
+      'Hardened web systems through proactive threat monitoring and custom IPS rule development, maintaining sub-hour resolution on bugs and vulnerabilities.',
+    ],
+  },
+] as const;
+
+const OFF_SCREEN = [
+  { label: 'Physical', body: 'Futball, Calisthenics, Gardening, MMA' },
+  { label: 'Acoustics', body: 'Learning Piano, Singing, Music Theory' },
+  { label: 'Linguistics', body: 'Learning Spanish, Japanese, ASL' },
+  { label: 'Hardware', body: '3D Printing, Circuits, Robotics, Lockpicking' },
+] as const;
+
+const ACCENT_STYLES = {
+  indigo: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400',
+  emerald: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
+  amber: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
+  rose: 'bg-rose-500/10 border-rose-500/20 text-rose-400',
+} as const;
+
+const BADGE_STYLES = {
+  indigo: 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20',
+  emerald: 'bg-emerald-500/10 text-emerald-300 border-emerald-500/20',
+  amber: 'bg-amber-500/10 text-amber-300 border-amber-500/20',
+  rose: 'bg-rose-500/10 text-rose-300 border-rose-500/20',
+} as const;
+
+const ICON_COLOR = {
+  indigo: 'text-indigo-400',
+  emerald: 'text-emerald-400',
+  amber: 'text-amber-400',
+  rose: 'text-rose-400',
+} as const;
+
+const CONTACT_EMAIL = 'jeanluc.williams@proton.me'
+
+const URL_LINKS = {
+  github: 'https://github.com/jeanluc-w',
+  linkedin: 'https://linkedin.com/in/jlsw',
+  credentials: 'https://www.credential.net/profile/jeanlucwilliams49621/wallet',
+}
+
+const PERSON_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Jean-Luc Williams',
+  jobTitle: 'Software Engineer',
+  email: `mailto:${CONTACT_EMAIL}`,
+  url: 'https://jeanluc-williams.com',
+  sameAs: [
+    URL_LINKS.github,
+    URL_LINKS.linkedin,
+    URL_LINKS.credentials,
+  ],
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'New York University' },
+    { '@type': 'CollegeOrUniversity', name: 'Rensselaer Polytechnic Institute' },
+  ],
+};
+
+
+
 export default function Home() {
   return (
+  <>
+    <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(PERSON_JSON_LD) }}
+      />
     <main className="min-h-screen px-6 py-12 md:px-20 max-w-5xl mx-auto space-y-24 text-slate-300">
-      
-      {/* --- HERO SECTION --- */}
+      {/* --- HERO --- */}
       <section className="space-y-6 pt-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-mono">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          Solutions Architect | Cloud, Backend, & Data
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          Software Engineer | Cloud, Identity & Backend Systems
         </div>
 
         <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-white">
@@ -34,10 +195,12 @@ export default function Home() {
         </h1>
 
         <p className="text-lg md:text-xl text-slate-400 leading-relaxed max-w-3xl">
-          Solutions Architect with 6+ years of experience designing scalable cloud infrastructure, enterprise backend systems, and secure, data-driven architectures. {/*[cite: 3] */} Combining a Master’s in Cyber Security (NSA CAE-CD) with a foundation in Cognitive Engineering, I specialize in aligning complex technical architecture with human-centered business objectives. {/*[cite: 3] */}
+          Software engineer with 6+ years building identity, cloud, and enterprise backend
+          systems. Backed by a Master&rsquo;s in Cyber Security (NSA CAE-CD) and a background in
+          Cognitive Engineering, I focus on turning ambiguous business requirements into secure,
+          measurable technical wins.
         </p>
 
-        {/* Action Links */}
         <div className="flex flex-wrap gap-4 pt-2 text-sm font-medium">
           <a
             href="#projects"
@@ -54,27 +217,27 @@ export default function Home() {
             View Resume <ArrowUpRight className="w-4 h-4" />
           </a>
           <a
-            href="https://github.com/jeanluc-w"
+            href={URL_LINKS.github}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
             aria-label="GitHub Profile"
           >
             <FaGithub className="w-5 h-5" />
           </a>
           <a
-            href="https://linkedin.com/in/jlsw"
+            href={URL_LINKS.linkedin}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="p-2.5 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white transition"
             aria-label="LinkedIn Profile"
           >
             <FaLinkedin className="w-5 h-5" />
           </a>
           <a
-            href="https://www.credential.net/profile/jeanlucwilliams49621/wallet"
+            href={URL_LINKS.credentials}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="flex items-center gap-2 p-2.5 px-4 rounded-lg bg-slate-900 border border-slate-800 hover:border-emerald-500/50 text-slate-300 hover:text-emerald-400 transition"
             aria-label="NYU & NSA Cybersecurity Credentials"
           >
@@ -84,7 +247,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* --- SYSTEMS MINDSET / BIO --- */}
+      {/* --- BIO --- */}
       <section className="p-8 rounded-2xl bg-slate-900/40 border border-slate-800/80 space-y-4">
         <div className="flex items-center gap-2 text-emerald-400 font-mono text-sm">
           <Brain className="w-4 h-4" />
@@ -92,14 +255,21 @@ export default function Home() {
         </div>
         <h2 className="text-2xl font-bold text-white">Engineering for Complexity & Human Logic</h2>
         <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-          My engineering foundation merges technical execution with human-centered design. Rooted in early electrical engineering studies and formalized with a Bachelor of Science in Information Technology & Web Science concentrating in Human-Computer Interface/Cognitive Engineering from RPI, I approach systems with great consideration to how they are used by users and how they will scale in the future.
+          My engineering foundation merges technical execution with human-centered design. Rooted
+          in early electrical engineering studies and formalized with a B.S. in Information
+          Technology & Web Science, concentrating in Human-Computer Interaction/Cognitive
+          Engineering from RPI, I approach systems with close attention to how they&rsquo;re used
+          today and how they need to scale tomorrow.
         </p>
         <p className="text-sm md:text-base text-slate-400 leading-relaxed">
-          Coupled with a Master of Science in Cyber Security from NYU and years of enterprise backend development, I build robust infrastructure that doesn't just function securely, but scales intuitively. Whether mitigating enterprise cyber events or designing cloud pipelines, my goal is reliable, data-driven resilience.
+          Paired with an M.S. in Cyber Security from NYU and years of enterprise backend
+          development, I build infrastructure that doesn&rsquo;t just function securely, but
+          scales intuitively. Whether responding to an enterprise security incident or designing
+          a cloud pipeline, the goal is the same: reliable, data-driven resilience.
         </p>
       </section>
 
-      {/* --- CAPABILITIES MATRIX --- */}
+      {/* --- CAPABILITIES --- */}
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
@@ -110,39 +280,22 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700/80 transition space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-              <Code2 className="w-5 h-5" />
+          {CAPABILITIES.map(({ icon: Icon, accent, title, body }) => (
+            <div
+              key={title}
+              className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700/80 transition space-y-3"
+            >
+              <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${ACCENT_STYLES[accent]}`}>
+                <Icon className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-white text-base">{title}</h3>
+              <p className="text-xs text-slate-400 leading-relaxed">{body}</p>
             </div>
-            <h3 className="font-bold text-white text-base">Cloud & DevOps</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              AWS, Google Cloud (GCP), Microsoft Azure, Terraform, Docker, Azure DevOps, GitHub Actions, Heroku Apps.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700/80 transition space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-              <Shield className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-white text-base">Backend & Security</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Dart, Python, Java, Node.js, TypeScript, Golang, IAM, OAuth 2.0, Okta, Auth0, Apigee X.
-            </p>
-          </div>
-
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700/80 transition space-y-3">
-            <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-              <Brain className="w-5 h-5" />
-            </div>
-            <h3 className="font-bold text-white text-base">Frontend & Data</h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              React, Next.js, Flutter, TailwindCSS, SQL, PostgreSQL, MongoDB, Firestore, Redis.
-            </p>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* --- FEATURED PROJECTS --- */}
+      {/* --- PROJECTS --- */}
       <section id="projects" className="space-y-8">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
@@ -153,69 +306,47 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          {/* Project 1: Edibubble */}
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition space-y-4 flex flex-col justify-between md:col-span-2">
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <Code2 className="w-8 h-8 text-emerald-400" />
-                <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-                  Active Development
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-white">Edibubble — Social Network</h3>
-              <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">
-                Developed a cross-platform social networking application using Flutter and Dart, focused on high-performance mobile and web UI rendering. {/*[cite: 3] */} Designed and integrated a scalable backend utilizing Supabase (PostgreSQL), managing real-time data syncing, user authentication, and robust relational data schemas. {/*[cite: 3] */}
-              </p>
-            </div>
-            <div className="pt-2 text-xs font-mono text-slate-500 flex items-center justify-between border-t border-slate-800/60">
-              <span>Flutter • Supabase • Dart</span>
-              <span className="text-emerald-400">Mobile & Web App</span>
-            </div>
-          </div>
-
-          {/* Project 2: Stick-Champ */}
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition space-y-4 flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <Gamepad2 className="w-8 h-8 text-indigo-400" />
-                <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                  Concept & Mechanics
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-white">Stick-Champ Engine</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Architected a custom 2-player arcade fighting game engine in C# and Unity, implementing deterministic rollback netcode to ensure zero-latency remote multiplayer synchronization. {/*[cite: 3] */} Engineered precise frame data syncing and input buffer prediction mechanisms, optimizing complex network state logic for a target Steam release. {/*[cite: 3] */}
-              </p>
-            </div>
-            <div className="pt-2 text-xs font-mono text-slate-500 border-t border-slate-800/60">
-              Focus: Unity (C#) & Network State Sync
-            </div>
-          </div>
-
-          {/* Project 3: Physical & 3D Prototyping */}
-          <div className="p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition space-y-4 flex flex-col justify-between">
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <Wrench className="w-8 h-8 text-amber-400" />
-                <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                  Hardware & Making
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-white">Hardware & Maker Lab</h3>
-              <p className="text-sm text-slate-400 leading-relaxed">
-                Engineered physical IoT and hardware security systems, including the assembly, manual soldering, and configuration of a Slim Pwnagotchi for network auditing and experimenting. {/*[cite: 3] */} Designed custom CAD models for functional structural components, executed precision 3D-printing hardware upgrades, and prototyped complex multi-part physical assemblies. {/*[cite: 3] */}
-              </p>
-            </div>
-            <div className="pt-2 text-xs font-mono text-slate-500 border-t border-slate-800/60">
-              Focus: Soldering, Assembly & 3D Printing
-            </div>
-          </div>
-
+          {PROJECTS.map(({ icon: Icon, accent, status, title, body, stack, span, link }) => {
+            const Wrapper = link ? 'a' : 'div';
+            const wrapperProps = link
+              ? { href: link, target: '_blank', rel: 'noopener noreferrer' }
+              : {};
+            return (
+              <Wrapper
+                key={title}
+                {...wrapperProps}
+                className={`p-6 rounded-xl bg-slate-900/50 border border-slate-800 hover:border-slate-700 transition space-y-4 flex flex-col justify-between ${
+                  span ? 'md:col-span-2' : ''
+                }`}
+              >
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start">
+                    <Icon className={`w-8 h-8 ${ICON_COLOR[accent]}`} />
+                    <span className={`text-xs font-mono px-2.5 py-1 rounded-full border ${BADGE_STYLES[accent]}`}>
+                      {status}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-white flex items-center gap-1.5">
+                    {title}
+                    {link && <ArrowUpRight className="w-4 h-4 text-slate-500" />}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">{body}</p>
+                </div>
+                <div className="pt-2 text-xs font-mono text-slate-500 flex items-center justify-between border-t border-slate-800/60">
+                  <span>{stack}</span>
+                  {link ? (
+                    <span className="text-emerald-400">View Project</span>
+                  ) : (
+                    <span className="text-slate-600">Not public yet</span>
+                  )}
+                </div>
+              </Wrapper>
+            );
+          })}
         </div>
       </section>
 
-      {/* --- EXPERIENCE / RESUME TIMELINE --- */}
+      {/* --- EXPERIENCE --- */}
       <section className="space-y-8">
         <div className="flex items-center justify-between border-b border-slate-800 pb-4">
           <h2 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
@@ -226,59 +357,30 @@ export default function Home() {
         </div>
 
         <div className="space-y-10 border-l-2 border-slate-800 pl-6 ml-2">
-          
-          {/* Role 1: Fletcher Jones */}
-          <div className="relative space-y-2">
-            <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-emerald-400 border-4 border-slate-950"></div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <h3 className="text-lg font-bold text-white">Founding Software Engineer</h3>
-              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded w-fit">
-                Fletcher Jones Management Group
-              </span>
+          {EXPERIENCE.map(({ role, org, current, bullets }) => (
+            <div key={role} className="relative space-y-2">
+              <div
+                className={`absolute -left-[31px] top-1.5 w-3 h-3 rounded-full border-4 border-slate-950 ${
+                  current ? 'bg-emerald-400' : 'bg-slate-600'
+                }`}
+              />
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                <h3 className="text-lg font-bold text-white">{role}</h3>
+                <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded w-fit">
+                  {org}
+                </span>
+              </div>
+              <ul className="text-sm text-slate-400 leading-relaxed pt-2 space-y-2 list-disc pl-4 marker:text-slate-600">
+                {bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
             </div>
-            <ul className="text-sm text-slate-400 leading-relaxed pt-2 space-y-2 list-disc pl-4 marker:text-slate-600">
-              <li>Built and led the company's first internal software engineering team, successfully transitioning ownership of a six-year Salesforce platform from external contractors. {/*[cite: 3] */}</li>
-              <li>Architected CI/CD pipelines via GitHub Actions, automating deployments across environments and providing the executive suite with transparent, real-time project visibility. {/*[cite: 3] */}</li>
-              <li>Strategized with the CTO to map the global technology landscape, defining the roadmap for enterprise-wide stack consolidation and infrastructure optimization. {/*[cite: 3] */}</li>
-            </ul>
-          </div>
-
-          {/* Role 2: MGM Resorts */}
-          <div className="relative space-y-2">
-            <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-slate-600 border-4 border-slate-950"></div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <h3 className="text-lg font-bold text-white">Software Engineer I, Customer Identity Team</h3> {/*[cite: 3] */}
-              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded w-fit">
-                MGM Resorts International
-              </span>
-            </div>
-            <ul className="text-sm text-slate-400 leading-relaxed pt-2 space-y-2 list-disc pl-4 marker:text-slate-600">
-              <li>Transformed guest identity experiences, achieving a 27% increase in login success and a 25.7% boost in account activation while eliminating major recurring guest-reported errors. {/*[cite: 3] */}</li>
-              <li>Modernized Identity systems to ensure strict OAuth 2.0 compliance, guiding cross-functional teams through complex integration updates in a polyglot environment (Java, Node.js, Python, Dart). {/*[cite: 3] */}</li>
-              <li>Developed high-performance Dart-based APIs for Google Firestore, enabling personalized user preference storage and tailored marketing offers. {/*[cite: 3] */}</li>
-              <li>Executed critical restoration tasks during an enterprise-wide security event, rebuilding core networking and service environments to facilitate total business recovery. {/*[cite: 3] */}</li>
-            </ul>
-          </div>
-
-          {/* Role 3: Webmaster / Consultant */}
-          <div className="relative space-y-2">
-            <div className="absolute -left-[31px] top-1.5 w-3 h-3 rounded-full bg-slate-600 border-4 border-slate-950"></div>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-              <h3 className="text-lg font-bold text-white">Webmaster</h3>
-              <span className="text-xs font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded w-fit">
-                LARGO Consulting Services, LLC
-              </span>
-            </div>
-            <ul className="text-sm text-slate-400 leading-relaxed pt-2 space-y-2 list-disc pl-4 marker:text-slate-600">
-              <li>Spearheaded the full-lifecycle management (design, security, and optimization) of 11 client websites on WordPress and BigCommerce platforms. {/*[cite: 3] */}</li>
-              <li>Hardened web systems through proactive threat monitoring and custom IPS rule development, ensuring sub-hour resolution for site bugs and vulnerabilities. {/*[cite: 3] */}</li>
-            </ul>
-          </div>
-
+          ))}
         </div>
       </section>
 
-      {/* --- BEYOND THE SCREEN / PERSONAL --- */}
+      {/* --- OFF-SCREEN --- */}
       <section className="p-8 rounded-2xl bg-slate-900/30 border border-slate-800/60 space-y-4">
         <div className="flex items-center gap-2 text-slate-400 font-mono text-sm">
           <Compass className="w-4 h-4 text-emerald-400" />
@@ -286,25 +388,30 @@ export default function Home() {
         </div>
         <h2 className="text-xl font-bold text-white">Continuous Growth</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 text-xs font-mono text-slate-300">
-          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-            <span className="block text-emerald-400 font-bold mb-0.5">Physical</span>
-            Daily Soccer, Calisthenics, Gardening
-          </div>
-          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-            <span className="block text-emerald-400 font-bold mb-0.5">Acoustics</span>
-            Learning Piano, Singing, Music Theory
-          </div>
-          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-            <span className="block text-emerald-400 font-bold mb-0.5">Linguistics</span>
-            Learning Spanish, Japanese, ASL
-          </div>
-          <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-            <span className="block text-emerald-400 font-bold mb-0.5">Hardware</span>
-            3D Printing, Circuits, Robotics, Lockpicking
-          </div>
+          {OFF_SCREEN.map(({ label, body }) => (
+            <div key={label} className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+              <span className="block text-emerald-400 font-bold mb-0.5">{label}</span>
+              {body}
+            </div>
+          ))}
         </div>
       </section>
-
     </main>
+
+    <footer className="max-w-5xl mx-auto px-6 md:px-20 py-10 border-t border-slate-900 text-sm text-slate-500">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            className="flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition"
+          >
+            <Mail className="w-4 h-4" />
+            {CONTACT_EMAIL}
+          </a>
+          <p className="font-mono text-xs text-slate-600">
+            © {new Date().getFullYear()} Jean-Luc Williams. Built with Next.js & Tailwind CSS.
+          </p>
+        </div>
+      </footer>
+    </>
   );
 }

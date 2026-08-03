@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og';
 export const runtime = 'edge';
 
 // Image metadata
-export const alt = 'Jean-Luc Williams - Solutions Architect';
+export const alt = 'Jean-Luc Williams - Software Engineer';
 export const size = {
   width: 1200,
   height: 630,
@@ -53,7 +53,7 @@ export default function Image() {
               fontFamily: 'monospace',
             }}
           >
-            Solutions Architect | Cloud, Backend, & Data
+            Software Engineer | Cloud, Identity & Backend Systems
           </div>
 
           {/* Name */}
